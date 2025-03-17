@@ -1,0 +1,6 @@
+@aug24ft_bet_ca_lundegaute_HostAddress = http://localhost:5042
+
+GET {{aug24ft_bet_ca_lundegaute_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
