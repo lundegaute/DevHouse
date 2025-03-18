@@ -1,6 +1,9 @@
 using DevHouse.Data;
 using DevHouse.Models;
+using DevHouse.Services;
+using DevHouse.SwaggerExamples;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,12 +27,22 @@ builder.Services.AddSwaggerGen(options =>
         Title = "Dev House",
         Description = "API to keep track of In-House development projects",
     });
+    options.ExampleFilters();
 
     // Adding XML comments to Swagger
     var xmlFileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFileName);
     options.IncludeXmlComments(xmlPath);
 });
+builder.Services.AddSwaggerExamplesFromAssemblyOf<CreateRoleExample>();
+builder.Services.AddSwaggerExamplesFromAssemblyOf<UpdateRoleExample>();
+
+//builder.Services.AddScoped<ProjectService>();
+//builder.Services.AddScoped<TeamService>();
+//builder.Services.AddScoped<ProjectTypeService>();
+//builder.Services.AddScoped<DeveloperService>();
+builder.Services.AddScoped<RoleService>();
+
 #endregion
 
 #region App

@@ -31,6 +31,7 @@ If you are unsure of any instructions for the course assignment, contact out to 
     - dotnet add package Microsoft.AspNetCore.OpenApi --version 9.0.1
     - dotnet add package Microsoft.EntityFrameworkCore.Design --version 8.0.0
     - dotnet add package SwashBuckle.AspNetCore --version 7.3.1
+    - dotnet add package SwashBuckle.aspNetCore.Filters --version 8.0.2
     - dotnet add package MySQL.EntityFrameworkCore --version 8.0.0
     - dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer --version 9.0.3
     - dotnet add package System.IdentityModel.Tokens.Jwt --version 8.6.1
@@ -41,6 +42,7 @@ If you are unsure of any instructions for the course assignment, contact out to 
 - 
 
 # Instructions to run the application
+- 
 
 
 # Instructions to create needed Migrations
