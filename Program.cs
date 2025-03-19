@@ -43,7 +43,7 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddSwaggerExamplesFromAssemblyOf<CreateRoleExample>();
 builder.Services.AddSwaggerExamplesFromAssemblyOf<UpdateRoleExample>();
 
-//builder.Services.AddScoped<ProjectService>();
+builder.Services.AddScoped<ProjectTypeService>();
 builder.Services.AddScoped<TeamService>();
 //builder.Services.AddScoped<ProjectTypeService>();
 builder.Services.AddScoped<DeveloperService>();
