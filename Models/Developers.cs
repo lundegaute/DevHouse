@@ -1,3 +1,6 @@
+
+using System.Text.Json.Serialization;
+
 namespace DevHouse.Models {
     public class Developer {
         public int Id { get; set; }
@@ -6,4 +9,4 @@ namespace DevHouse.Models {
         public Team Team { get; set; }
         public Role Role { get; set; }
     }
-}
+} 

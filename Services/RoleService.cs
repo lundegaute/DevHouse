@@ -17,7 +17,11 @@ namespace DevHouse.Services {
             if ( id < 1) {
                 throw new ArgumentException("Id must be greater than 0");
             }
-            return await _context.Roles.FindAsync(id);
+            var role = await _context.Roles.FindAsync(id);
+            if ( role is null) {
+                throw new InvalidOperationException("Role not found");
+            }
+            return role;
         }
         public async Task<Role> AddRole(string name) {
             if ( string.IsNullOrWhiteSpace(name)) {

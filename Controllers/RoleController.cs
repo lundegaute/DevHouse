@@ -31,7 +31,7 @@ namespace DevHouse.Controllers {
         }
 
         /// <summary>
-        /// Returns a sing role by Id
+        /// Returns a role by Id
         /// </summary>
         /// <param name="id">Specific Id to retrieve</param>
         /// <response code="200">Returns requested role</response>
@@ -42,12 +42,11 @@ namespace DevHouse.Controllers {
         public async Task<ActionResult<Role>> GetRole(int id) {
             try {
                 var role = await _roleService.GetRole(id);
-                if ( role is null) {
-                    return NotFound($"No Role found with id: {id}");
-                }
                 return Ok(role);
             } catch (ArgumentException e) {
                 return BadRequest(e.Message);
+            } catch (InvalidOperationException e) {
+                return NotFound(e.Message);
             } catch (HttpRequestException) {
                 return StatusCode(500, "Internal server error");
             }
@@ -78,14 +77,15 @@ namespace DevHouse.Controllers {
         /// Updates a role in the database by Id
         /// </summary>
         /// <param name="role">Only name and id is needed. Id from URL must match Id from body</param>
-        /// <returns></returns>
+        /// <response code="204">No content</response>
+        /// <response code="400">Bad request: Id must be greater than 0, Name cannot be null, empty or is already in database</response>
         [HttpPut("{id}")]
-        [SwaggerRequestExample(typeof(Role), typeof(UpdateRoleExample))]
-        public async Task<ActionResult<Role>> UpdateRole(int id, UpdateRoleDTO role) {
+        [SwaggerRequestExample(typeof(UpdateRoleDTO), typeof(UpdateRoleExample))]
+        public async Task<ActionResult<Role>> UpdateRole(int id,[FromBody] UpdateRoleDTO role) {
             try {
                 await _roleService.UpdateRole(id, role);
                 return NoContent();
-                
+
             } catch (ArgumentException e) { 
                 return BadRequest(e.Message);
 
@@ -103,7 +103,7 @@ namespace DevHouse.Controllers {
         /// <summary>
         /// Deletes a role from the database by Id
         /// </summary>
-        /// <param name="id">Only Id from url is needed</param>
+        /// <param name="id">Only Id from the URL is needed. Id > 0 is required and must match an Id in the database</param>
         /// <returns></returns>
         [HttpDelete("{id}")]
         public async Task<ActionResult<Role>> DeleteRole(int id) {

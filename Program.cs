@@ -6,6 +6,8 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 #region Builder
 var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +18,11 @@ var connectionString = builder.Configuration.GetConnectionString("DevHouseDbConn
 builder.Services.AddDbContext<DataContext>(options => options.UseMySQL(connectionString));
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+        });
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -38,9 +44,9 @@ builder.Services.AddSwaggerExamplesFromAssemblyOf<CreateRoleExample>();
 builder.Services.AddSwaggerExamplesFromAssemblyOf<UpdateRoleExample>();
 
 //builder.Services.AddScoped<ProjectService>();
-//builder.Services.AddScoped<TeamService>();
+builder.Services.AddScoped<TeamService>();
 //builder.Services.AddScoped<ProjectTypeService>();
-//builder.Services.AddScoped<DeveloperService>();
+builder.Services.AddScoped<DeveloperService>();
 builder.Services.AddScoped<RoleService>();
 
 #endregion
