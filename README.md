@@ -21,20 +21,24 @@ If you are unsure of any instructions for the course assignment, contact out to 
 **REMEMBER** Your Moodle LMS submission must have your repository link **AND** your Github username in the text file.
 
 ---
+# DevHouse
+- Rest-API for keeping track of in house developments
 
 # Application setup instructions
-- Creating a new ASP .NET Core Web Api with controllers
+1. Creating a new ASP .NET Core Web Api with controllers
     - Terminal command: dotnet new webpi -controllers
-- Now inside the Properties/launchSettings.json, there are two properties under the "profiles" section. Delete the "http" property, so only the https property is left. This is to launch the api in https mode.
+2. Now inside the Properties/launchSettings.json, there are two properties under the "profiles" section. Delete the "http" property, so only the https property is left. This is to launch the api in https mode.
 
-- Now to install all packages. Follow the terminal commands
-    - dotnet add package Microsoft.AspNetCore.OpenApi --version 9.0.1
-    - dotnet add package Microsoft.EntityFrameworkCore.Design --version 8.0.0
-    - dotnet add package SwashBuckle.AspNetCore --version 7.3.1
-    - dotnet add package SwashBuckle.aspNetCore.Filters --version 8.0.2
-    - dotnet add package MySQL.EntityFrameworkCore --version 8.0.0
-    - dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer --version 9.0.3
-    - dotnet add package System.IdentityModel.Tokens.Jwt --version 8.6.1
+3. Now to install all packages. Follow the terminal commands
+    ``` sh
+    dotnet add package Microsoft.AspNetCore.OpenApi --version 9.0.1
+    dotnet add package Microsoft.EntityFrameworkCore.Design --version 8.0.0
+    dotnet add package SwashBuckle.AspNetCore --version 7.3.1
+    dotnet add package SwashBuckle.aspNetCore.Filters --version 8.0.2
+    dotnet add package MySQL.EntityFrameworkCore --version 8.0.0
+    dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer --version 9.0.3
+    dotnet add package System.IdentityModel.Tokens.Jwt --version 8.6.1
+    ```
 
 - Adding a .gitignore file with the following command
     - dotnet new gitignore
