@@ -45,7 +45,7 @@ builder.Services.AddSwaggerExamplesFromAssemblyOf<UpdateRoleExample>();
 
 builder.Services.AddScoped<ProjectTypeService>();
 builder.Services.AddScoped<TeamService>();
-//builder.Services.AddScoped<ProjectTypeService>();
+builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<DeveloperService>();
 builder.Services.AddScoped<RoleService>();
 
