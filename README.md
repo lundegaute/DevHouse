@@ -46,21 +46,15 @@ If you are unsure of any instructions for the course assignment, contact out to 
     ```sh
     dotnet new gitignore
     ```
-- 
 
-# Instructions to run the application
+# Instructions to run application
+- Terminal command to run the application
     ```sh
     dotnet run
     ```
 
 
 # Instructions to create needed Migrations
-- In program.cs inside the builder region, add the following:
-    - ![Database Connection Example](Images/DbConnectionInProgramFile.png)
-    - This is needed to connect our program to MySQL
-- At the top of program.cs add the following:
-    - using Microsoft.EntityFrameworkCore;
-    - DevHouse.Data
 - Terminal commands to create migrations
     ```sh
     dotnet ef migrations add Initial -c DataContext
