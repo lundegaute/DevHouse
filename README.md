@@ -26,7 +26,9 @@ If you are unsure of any instructions for the course assignment, contact out to 
 
 # Application setup instructions
 1. Creating a new ASP .NET Core Web Api with controllers
-    - Terminal command: dotnet new webpi -controllers
+    ```sh
+    dotnet new webpi -controllers
+    ```
 2. Now inside the Properties/launchSettings.json, there are two properties under the "profiles" section. Delete the "http" property, so only the https property is left. This is to launch the api in https mode.
 
 3. Now to install all packages. Follow the terminal commands
@@ -41,12 +43,15 @@ If you are unsure of any instructions for the course assignment, contact out to 
     ```
 
 - Adding a .gitignore file with the following command
-    - dotnet new gitignore
-
+    ```sh
+    dotnet new gitignore
+    ```
 - 
 
 # Instructions to run the application
-- 
+    ```sh
+    dotnet run
+    ```
 
 
 # Instructions to create needed Migrations
@@ -57,10 +62,13 @@ If you are unsure of any instructions for the course assignment, contact out to 
     - using Microsoft.EntityFrameworkCore;
     - DevHouse.Data
 - Terminal commands to create migrations
-    - dotnet ef migrations add Initial -c DataContext
-- Then to use these migrations and create the database
-    - dotnet ef database update
-
+    ```sh
+    dotnet ef migrations add Initial -c DataContext
+    ```
+    If migrations were created successfully, continue with the following command
+    ```sh
+    dotnet ef database update
+    ```
 # Connection String structure for MySQL Database connection
 DevHouseConnectionString = "server=localhost;database=yourDatabaseNameHere;user=yourUsernameHere;password=yourPasswordHere;"
 
