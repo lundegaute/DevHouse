@@ -5,7 +5,7 @@ namespace DevHouse.SwaggerExamples {
     public class CreateProjectExample : IExamplesProvider<AddProjectDTO> {
         public AddProjectDTO GetExamples() {
             return new AddProjectDTO {
-                Name = "Space Elevator",
+                Name = "The Tome of Infinite Queries",
                 TeamId = 1,
                 ProjectTypeId = 1
             };
@@ -15,7 +15,7 @@ namespace DevHouse.SwaggerExamples {
         public UpdateProjectDTO GetExamples() {
             return new UpdateProjectDTO {
                 Id = 1,
-                Name = "Warp Drive",
+                Name = "The Holy Debugging Crusade",
                 TeamId = 2,
                 ProjectTypeId = 2
             };

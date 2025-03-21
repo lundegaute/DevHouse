@@ -6,7 +6,7 @@ namespace DevHouse.SwaggerExamples {
     public class CreateProjectTypeExample : IExamplesProvider<AddProjectTypeDTO> {
         public AddProjectTypeDTO GetExamples() {
             return new AddProjectTypeDTO {
-                Name = "Web Application"
+                Name = "Arcane Ledger System"
             };
         }
     }
@@ -14,7 +14,7 @@ namespace DevHouse.SwaggerExamples {
         public UpdateProjectTypeDTO GetExamples() {
             return new UpdateProjectTypeDTO {
                 Id = 1,
-                Name = "Mobile Application"
+                Name = "Infernal Bug Exorcism"
             };
         }
     }

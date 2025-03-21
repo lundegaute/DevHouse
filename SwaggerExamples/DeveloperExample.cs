@@ -6,8 +6,8 @@ namespace DevHouse.SwaggerExamples {
     public class CreateDeveloperExample : IExamplesProvider<AddDeveloperDTO> {
         public AddDeveloperDTO GetExamples() {
             return new AddDeveloperDTO {
-                FirstName = "Bruce",
-                LastName = "Wayne",
+                FirstName = "Archmage Recursionus",
+                LastName = "The Unwise",
                 RoleId = 1,
                 TeamId = 1
             };
@@ -17,8 +17,8 @@ namespace DevHouse.SwaggerExamples {
         public UpdateDeveloperDTO GetExamples() {
             return new UpdateDeveloperDTO {
                 Id = 1,
-                FirstName = "Clark",
-                LastName = "Kent",
+                FirstName = "Lord Fibonacci",
+                LastName = "The Golden",
                 RoleId = 2,
                 TeamId = 2
             };

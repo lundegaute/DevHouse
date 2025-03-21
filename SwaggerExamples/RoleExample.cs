@@ -6,7 +6,7 @@ namespace DevHouse.SwaggerExamples {
     public class CreateRoleExample : IExamplesProvider<AddRoleDTO> {
         public AddRoleDTO GetExamples() {
             return new AddRoleDTO {
-                Name = "Backend Developer"
+                Name = "Wizard of Infinite Loops"
             };
         }
     }
@@ -14,7 +14,7 @@ namespace DevHouse.SwaggerExamples {
         public UpdateRoleDTO GetExamples() {
             return new UpdateRoleDTO {
                 Id = 1,
-                Name = "Frontend Developer"
+                Name = "Necromancer of the Legacy Code"
             };
         }
     }

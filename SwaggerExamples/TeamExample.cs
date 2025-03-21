@@ -6,7 +6,7 @@ namespace DevHouse.SwaggerExamples {
     public class CreateTeamExample : IExamplesProvider<AddTeamDTO> {
         public AddTeamDTO GetExamples() {
             return new AddTeamDTO {
-                Name = "Team 1"
+                Name = "InterDimensional Vampire Hunters"
             };
         }
     }
@@ -14,7 +14,7 @@ namespace DevHouse.SwaggerExamples {
         public UpdateTeamDTO GetExamples() {
             return new UpdateTeamDTO {
                 Id = 1,
-                Name = "Team 2"
+                Name = "Electromagnetic Dragonslayers"
             };
         }
     }
