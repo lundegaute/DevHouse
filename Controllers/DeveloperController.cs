@@ -5,11 +5,13 @@ using DevHouse.SwaggerExamples;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;
-using System;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace DevHouse.Controllers {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class DeveloperController : ControllerBase {
         private readonly DeveloperService _developerService;
         public DeveloperController(DeveloperService developerService) {

@@ -5,10 +5,13 @@ using DevHouse.SwaggerExamples;
 using DevHouse.DTO;
 using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.Annotations;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace DevHouse.Controllers {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class RoleController : ControllerBase {
         private readonly RoleService _roleService;
         public RoleController(RoleService roleService) {

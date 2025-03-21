@@ -1,14 +1,16 @@
 using DevHouse.Models;
 using DevHouse.DTO;
 using DevHouse.Services;
-using Microsoft.AspNetCore.Mvc;
 using DevHouse.SwaggerExamples;
+using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DevHouse.Controller {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ProjectController : ControllerBase {
         private readonly ProjectService _projectService;
         public ProjectController(ProjectService projectService) {

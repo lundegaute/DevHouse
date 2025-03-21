@@ -5,10 +5,13 @@ using DevHouse.SwaggerExamples;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace DevHouse.Controllers {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ProjectTypeController : ControllerBase {
         private readonly ProjectTypeService _projectTypeService;
         public ProjectTypeController(ProjectTypeService projectTypeService) {

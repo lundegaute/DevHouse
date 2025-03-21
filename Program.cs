@@ -2,12 +2,16 @@ using DevHouse.Data;
 using DevHouse.Models;
 using DevHouse.Services;
 using DevHouse.SwaggerExamples;
+using DevHouse.JwtConfiguration;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 #region Builder
 var builder = WebApplication.CreateBuilder(args);
@@ -35,11 +39,63 @@ builder.Services.AddSwaggerGen(options =>
     });
     options.ExampleFilters();
 
+    // Addig Jwt functionality to swagger
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme {
+        In = ParameterLocation.Header,
+        Description = "Please insert a valid Jwt token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement {
+        {
+            new OpenApiSecurityScheme {
+                Reference = new OpenApiReference {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+
     // Adding XML comments to Swagger
     var xmlFileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFileName);
     options.IncludeXmlComments(xmlPath);
 });
+
+#region Jwt Authentication
+
+var JwtSettings = new JwtSettings();
+builder.Configuration.GetSection(nameof(JwtSettings)).Bind(JwtSettings);
+builder.Services.AddSingleton(JwtSettings);
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = JwtSettings.Issuer,
+        ValidAudience = JwtSettings.Audience,
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8
+            .GetBytes(JwtSettings.SecretKey))
+    };
+});
+builder.Services.AddAuthorization();
+
+#endregion
+
 builder.Services.AddSwaggerExamplesFromAssemblyOf<CreateRoleExample>();
 builder.Services.AddSwaggerExamplesFromAssemblyOf<UpdateRoleExample>();
 
@@ -48,6 +104,7 @@ builder.Services.AddScoped<TeamService>();
 builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<DeveloperService>();
 builder.Services.AddScoped<RoleService>();
+builder.Services.AddScoped<AuthService>();
 
 #endregion
 
@@ -63,6 +120,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 namespace DevHouse.Data {
     public class DataContext : DbContext {
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
+        public DbSet<User> Users { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<Developer> Developers { get; set; }
         public DbSet<Team> Teams { get; set; }
