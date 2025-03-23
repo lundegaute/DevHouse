@@ -48,7 +48,7 @@ namespace DevHouse.Controllers {
                 return Ok(team);
             } catch (IndexOutOfRangeException e) {
                 return BadRequest(e.Message);
-            } catch (InvalidOperationException e) {
+            } catch (KeyNotFoundException e) {
                 return NotFound(e.Message);
             } catch (HttpRequestException) {
                 return StatusCode(500, "Internal server error");
@@ -66,9 +66,9 @@ namespace DevHouse.Controllers {
         [SwaggerRequestExample(typeof(AddTeamDTO), typeof(CreateTeamExample))]
         public async Task<ActionResult<Team>> CreateTeam([FromBody] AddTeamDTO team) {
             try {
-                var newTeam = await _teamService.AddTeam(team.Name);
+                var newTeam = await _teamService.AddTeam(team);
                 return CreatedAtAction(nameof(GetTeam), new { id = newTeam.Id }, newTeam);
-            } catch (InvalidOperationException e) {
+            } catch (ArgumentException e) {
                 return BadRequest(e.Message);
             } catch (HttpRequestException) {
                 return StatusCode(500, "Internal server error");
@@ -91,8 +91,6 @@ namespace DevHouse.Controllers {
                 return NoContent();
             } catch (ArgumentException e) {
                 return BadRequest(e.Message);
-            } catch (InvalidOperationException e ) {
-                return BadRequest(e.Message);
             } catch (HttpRequestException) {
                 return StatusCode(500, "Internal server error");
             }
@@ -104,7 +102,7 @@ namespace DevHouse.Controllers {
         /// <param name="id">Only Id from the URL is needed. Id > 0 is required and must match an Id in the database</param>
         /// <response code="204">No content</response>
         /// <response code="400">Bad request: Id must be greater than 0</response>
-        /// <response code="400">Bad request: Team not found</response>
+        /// <response code="400">Bad request: Team not found, or cant be deleted if connected to a developer or project</response>
         /// <response code="500">Internal server error</response>
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteTeam(int id) {
@@ -113,8 +111,10 @@ namespace DevHouse.Controllers {
                 return NoContent();
             } catch (IndexOutOfRangeException e) {
                 return BadRequest(e.Message);
-            } catch (InvalidOperationException e) {
+            } catch (KeyNotFoundException e) {
                 return BadRequest(e.Message);
+            } catch (Microsoft.EntityFrameworkCore.DbUpdateException) {
+                return BadRequest("Cannot delete team with active projects or developers");
             } catch (HttpRequestException) {
                 return StatusCode(500, "Internal server error");
             }

@@ -48,8 +48,10 @@ namespace DevHouse.Controllers {
                 return Ok(role);
             } catch (ArgumentException e) {
                 return BadRequest(e.Message);
-            } catch (InvalidOperationException e) {
+            } catch (KeyNotFoundException e) {
                 return NotFound(e.Message);
+            } catch (IndexOutOfRangeException e) {
+                return BadRequest(e.Message);
             } catch (HttpRequestException) {
                 return StatusCode(500, "Internal server error");
             }
@@ -66,11 +68,11 @@ namespace DevHouse.Controllers {
         [SwaggerRequestExample(typeof(AddRoleDTO), typeof(CreateRoleExample))]
         public async Task<ActionResult<Role>> AddRole([FromBody] AddRoleDTO role) {
             try {
-                var newRole = await _roleService.AddRole(role.Name);
+                var newRole = await _roleService.AddRole(role);
                 return CreatedAtAction(nameof(GetRole), new { id = newRole.Id }, newRole);
             } catch (ArgumentException e) {
                 return BadRequest(e.Message);
-            } catch(InvalidOperationException e) {
+            } catch(KeyNotFoundException e) {
                 return BadRequest(e.Message);
             } catch (HttpRequestException) {
                 return StatusCode(500, "Internal server error");
@@ -88,16 +90,8 @@ namespace DevHouse.Controllers {
             try {
                 await _roleService.UpdateRole(id, role);
                 return NoContent();
-
             } catch (ArgumentException e) { 
                 return BadRequest(e.Message);
-
-            } catch (IndexOutOfRangeException e) {
-                return BadRequest(e.Message);
-
-            } catch (InvalidOperationException e) {
-                return BadRequest(e.Message);
-
             } catch (HttpRequestException) {
                 return StatusCode(500, "Internal server error");
             }
@@ -113,10 +107,12 @@ namespace DevHouse.Controllers {
             try {
                 await _roleService.DeleteRole(id);
                 return NoContent();
-            } catch(ArgumentException e) {
+            } catch(KeyNotFoundException e) {
                 return BadRequest(e.Message);
             } catch(IndexOutOfRangeException e) {
                 return BadRequest(e.Message);
+            } catch (Microsoft.EntityFrameworkCore.DbUpdateException) {
+                return BadRequest("Cannot delete role with active developers");
             } catch (HttpRequestException) {
                 return StatusCode(500, "Internal server error");
             }

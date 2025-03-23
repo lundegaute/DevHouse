@@ -69,6 +69,8 @@ namespace DevHouse.Controller {
             try {
                 var newProject = await _projectService.AddProject(project);
                 return CreatedAtAction(nameof(GetProject), new { id = newProject.Id}, newProject);
+            } catch (ArgumentException e) {
+                return BadRequest(e.Message);
             } catch (InvalidOperationException e) {
                 return BadRequest(e.Message);
             } catch (KeyNotFoundException e) {

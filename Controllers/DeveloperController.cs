@@ -48,7 +48,7 @@ namespace DevHouse.Controllers {
                 return Ok(developer);
             } catch (IndexOutOfRangeException e) {
                 return BadRequest(e.Message);
-            } catch (InvalidOperationException e) {
+            } catch (KeyNotFoundException e) {
                 return NotFound(e.Message);
             } catch (HttpRequestException) {
                 return StatusCode(500, "Internal server error");

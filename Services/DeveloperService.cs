@@ -1,6 +1,7 @@
 using DevHouse.Data;
 using DevHouse.Models;
 using DevHouse.DTO;
+using DevHouse.Helper;
 using Microsoft.EntityFrameworkCore;
 
 namespace DevHouse.Services {
@@ -15,31 +16,18 @@ namespace DevHouse.Services {
         }
 
         public async Task<Developer> GetDeveloper(int id) {
-            if ( id < 1) {
-                throw new IndexOutOfRangeException("Id must be greater than 0");
-            }
+            ValidationHelper.IdInRangeOrException(id);
             var developer = await _context.Developers.Include(t => t.Team).Include(r => r.Role).SingleOrDefaultAsync(d => d.Id == id);
-            if ( developer is null) {
-                throw new InvalidOperationException("Developer not found");
-            }
+            ValidationHelper.CheckIfExistsOrException((developer, nameof(Developer)));
             return developer;
         }
 
         public async Task<Developer> AddDeveloper(AddDeveloperDTO developer) {
             var developerExists = await _context.Developers.AnyAsync( d => d.LastName == developer.LastName);
-            if ( developerExists ) {
-                throw new ArgumentException("Developer already in database");
-            }
-
+            ValidationHelper.CheckIfNotInDatabaseOrException(developerExists, nameof(Developer));
             var team = await _context.Teams.FindAsync(developer.TeamId);
-            if ( team is null) {
-                throw new KeyNotFoundException("Team not found");
-            }
             var role = await _context.Roles.FindAsync(developer.RoleId);
-            if ( role is null) {
-                throw new KeyNotFoundException("Role not found");
-            }
-
+            ValidationHelper.CheckIfExistsOrException((team, nameof(Team)), (role, nameof(Role)));
             var newDeveloper = new Developer {
                 FirstName = developer.FirstName,
                 LastName = developer.LastName,
@@ -52,24 +40,12 @@ namespace DevHouse.Services {
         }
 
         public async Task UpdateDeveloper(int id, UpdateDeveloperDTO developer) {
-            if ( id != developer.Id) {
-                throw new ArgumentException("Id not matching developer Id");
-            }
-
-            var developerExists = await _context.Developers.AnyAsync( d => d.Id == developer.Id);
-            if ( developerExists ) {
-                throw new InvalidOperationException("Developer already in database");
-            }
-
+            ValidationHelper.CheckIfIdMatchBodyIdOrException(id, developer.Id, nameof(Developer));
+            var developerExists = await _context.Developers.AnyAsync( d => d.LastName == developer.LastName);
+            ValidationHelper.CheckIfNotInDatabaseOrException(developerExists, nameof(Developer));
             var role = await _context.Roles.FindAsync(developer.RoleId);
-            if ( role is null) {
-                throw new KeyNotFoundException("Role not found");
-            }
             var team = await _context.Teams.FindAsync(developer.TeamId);
-            if ( team is null) {
-                throw new KeyNotFoundException("Team not found");
-            }
-
+            ValidationHelper.CheckIfExistsOrException((role, nameof(Role)), (team, nameof(Team)));
             var updatedDeveloper = new Developer {
                 Id = developer.Id,
                 FirstName = developer.FirstName,
@@ -82,13 +58,9 @@ namespace DevHouse.Services {
         }
 
         public async Task DeleteDeveloper(int id) {
-            if ( id < 1) {
-                throw new IndexOutOfRangeException("Id must be greater than 0");
-            }
+            ValidationHelper.IdInRangeOrException(id);
             var developerToDelete = await _context.Developers.FindAsync(id);
-            if ( developerToDelete is null) {
-                throw new KeyNotFoundException("Developer not found");
-            }
+            ValidationHelper.CheckIfExistsOrException((developerToDelete, nameof(Developer)));
             _context.Developers.Remove(developerToDelete);
             await _context.SaveChangesAsync();
         }

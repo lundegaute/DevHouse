@@ -17,19 +17,17 @@ namespace DevHouse.Services {
         public async Task<Project> GetProject(int id) {
             ValidationHelper.IdInRangeOrException(id);
             var project = await _context.Projects.Include(p => p.ProjectType).Include(t => t.Team).ThenInclude(d => d.Developers).ThenInclude(r => r.Role).SingleOrDefaultAsync(p => p.Id == id);
-            ValidationHelper.CheckIfExistsOrException(project);
+            ValidationHelper.CheckIfExistsOrException((project, nameof(Project)));
             return project;
         } 
 
         public async Task<Project> AddProject(AddProjectDTO project) {
             var projectExists = await _context.Projects.AnyAsync(p => p.Name == project.Name);
-            if ( projectExists ) {
-                throw new InvalidOperationException("Project already in database");
-            }
+            ValidationHelper.CheckIfNotInDatabaseOrException(projectExists, nameof(Project));
 
             var team = await _context.Teams.FindAsync(project.TeamId);
             var projectType = await _context.ProjectTypes.FindAsync(project.ProjectTypeId);
-            ValidationHelper.CheckIfExistsOrException(team, projectType);
+            ValidationHelper.CheckIfExistsOrException((team, nameof(Team)), (projectType, nameof(ProjectType)));
             
             var newProject = new Project {
                 Name = project.Name,
@@ -42,17 +40,13 @@ namespace DevHouse.Services {
         }
 
         public async Task UpdateProject(int id, UpdateProjectDTO project) {
-            if ( id != project.Id) {
-                throw new ArgumentException("Id not matching project Id");
-            }
-            var projectExists = await _context.Projects.AnyAsync(p => p.Id == project.Id);
-            if ( !projectExists) {
-                throw new KeyNotFoundException("Project not found");
-            }
+            ValidationHelper.CheckIfIdMatchBodyIdOrException(id, project.Id, nameof(Project));
+            var projectExists = await _context.Projects.AnyAsync(p => p.Name == project.Name);
+            ValidationHelper.CheckIfNotInDatabaseOrException(projectExists, "Project");
             
             var team = await _context.Teams.FindAsync(project.TeamId);
             var projectType = await _context.ProjectTypes.FindAsync(project.ProjectTypeId);
-            ValidationHelper.CheckIfExistsOrException(team, projectType);
+            ValidationHelper.CheckIfExistsOrException((team, nameof(Team)), (projectType, nameof(ProjectType)));    
             
             var updatedProject = new Project {
                 Id = project.Id,
@@ -67,7 +61,7 @@ namespace DevHouse.Services {
         public async Task DeleteProject(int id) {
             ValidationHelper.IdInRangeOrException(id);
             var projectToDelete = await _context.Projects.FindAsync(id);
-            ValidationHelper.CheckIfExistsOrException(projectToDelete); 
+            ValidationHelper.CheckIfExistsOrException((projectToDelete, nameof(Project))); 
             _context.Projects.Remove(projectToDelete);
             await _context.SaveChangesAsync();
         }

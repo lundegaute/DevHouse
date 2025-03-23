@@ -42,7 +42,7 @@ namespace DevHouse.Services {
         }
         public async Task<User> GetUser(string username) {
             var user = await _context.Users.SingleOrDefaultAsync(u => u.Username == username);
-            ValidationHelper.CheckIfExistsOrException(user);
+            ValidationHelper.CheckIfExistsOrException((user, nameof(User)));
             return user;
         }
         public string GenerateToken(User user) {

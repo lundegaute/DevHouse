@@ -107,6 +107,8 @@ namespace DevHouse.Controllers {
                 return BadRequest(e.Message);
             } catch (KeyNotFoundException e) {
                 return NotFound(e.Message);
+            } catch (Microsoft.EntityFrameworkCore.DbUpdateException) {
+                return BadRequest("Cannot delete project type with active projects");
             } catch (HttpRequestException) {
                 return StatusCode(500, "Internal server error");
             }

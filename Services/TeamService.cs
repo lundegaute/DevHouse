@@ -1,5 +1,6 @@
 using DevHouse.Data;
 using DevHouse.DTO;
+using DevHouse.Helper;
 using DevHouse.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,55 +15,36 @@ namespace DevHouse.Services {
             return await _context.Teams.ToListAsync();
         }
         public async Task<Team> GetTeam(int id) {
-            if ( id < 1) {
-                throw new IndexOutOfRangeException("Id must be greater than 0");
-            }
+            ValidationHelper.IdInRangeOrException(id);
+
             var team = await _context.Teams.FindAsync(id);
-            if ( team is null) {
-                throw new InvalidOperationException("Team not found");
-            }
+            ValidationHelper.CheckIfExistsOrException((team, nameof(Team)));
+            
             return team;
         }
-        public async Task<Team> AddTeam(string name) {
-            // if ( string.IsNullOrWhiteSpace(name)) {
-            //     throw new ArgumentException("Name cannot be null or empty");
-            // }
-            var teamExists = await _context.Teams.AnyAsync( t => t.Name == name);
-            if ( teamExists ) {
-                throw new InvalidOperationException("Team already in database");
-            }
-            var newTeam = new Team { Name = name};
+        public async Task<Team> AddTeam(AddTeamDTO team) {
+            bool teamExists = await _context.Teams.AnyAsync( t => t.Name == team.Name);
+            ValidationHelper.CheckIfNotInDatabaseOrException(teamExists, nameof(Team));
+
+            var newTeam = new Team { Name = team.Name};
             _context.Teams.Add(newTeam);
             await _context.SaveChangesAsync();   
             return newTeam;
         }
         public async Task UpdateTeam(int id, UpdateTeamDTO team) {
-            // if ( id < 1 ) {
-            //     throw new IndexOutOfRangeException("Id must be greater than 0");
-            // }
-            // if ( string.IsNullOrWhiteSpace(team.Name)) {
-            //     throw new ArgumentException("Name cannot be null or empty");
-            // }
-            if ( id != team.Id) {
-                throw new ArgumentException("Id not matching team Id");
-            }
+            ValidationHelper.CheckIfIdMatchBodyIdOrException(id, team.Id, nameof(Team));
 
             var teamExists = await _context.Teams.AnyAsync( t => t.Name == team.Name);
-            if ( teamExists ) {
-                throw new InvalidOperationException("Team already in database");
-            }
+            ValidationHelper.CheckIfNotInDatabaseOrException(teamExists, nameof(Team));
 
             _context.Teams.Update(new Team { Id = team.Id, Name = team.Name });
             await _context.SaveChangesAsync();
         }
         public async Task DeleteTeam(int id) {
-            if (id < 1) {
-                throw new IndexOutOfRangeException("Id must be greater tha 0");
-            }
+            ValidationHelper.IdInRangeOrException(id);
+
             var teamToDelete = await _context.Teams.FindAsync(id);
-            if ( teamToDelete is null) {
-                throw new InvalidOperationException("Team not found");
-            }
+            ValidationHelper.CheckIfExistsOrException((teamToDelete, nameof(Team)));
 
             _context.Teams.Remove(teamToDelete);
             await _context.SaveChangesAsync();

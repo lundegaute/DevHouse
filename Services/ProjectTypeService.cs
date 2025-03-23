@@ -1,7 +1,9 @@
 using DevHouse.Models;
 using DevHouse.Data;
 using DevHouse.DTO;
+using DevHouse.Helper;
 using Microsoft.EntityFrameworkCore;
+using MySqlX.XDevAPI.Common;
 
 namespace DevHouse.Services {
     public class ProjectTypeService {
@@ -16,21 +18,16 @@ namespace DevHouse.Services {
         }
 
         public async Task<ProjectType> GetProjectType (int id) {
-            if ( id < 1) {
-                throw new IndexOutOfRangeException("Id must be greater than 0");
-            }
+            ValidationHelper.IdInRangeOrException(id);
             var projectType = await _context.ProjectTypes.FindAsync(id);
-            if ( projectType is null ) {
-                throw new KeyNotFoundException("Project type not found");
-            }
+            ValidationHelper.CheckIfExistsOrException((projectType, nameof(ProjectType)));
             return projectType;
         }
 
         public async Task<ProjectType> AddProjectType( AddProjectTypeDTO projectType) {
-            var projectTypeExists = await _context.ProjectTypes.AnyAsync( p => p.Name == projectType.Name);
-            if ( projectTypeExists ) {
-                throw new ArgumentException("Project type already in database");
-            }
+            bool projectTypeExists = await _context.ProjectTypes.AnyAsync( p => p.Name == projectType.Name);
+            ValidationHelper.CheckIfNotInDatabaseOrException(projectTypeExists, nameof(ProjectType));
+
             var newProjectType = new ProjectType { Name = projectType.Name};
             _context.ProjectTypes.Add(newProjectType);
             await _context.SaveChangesAsync();
@@ -38,14 +35,10 @@ namespace DevHouse.Services {
         }
 
         public async Task<ProjectType> UpdateProjectType(int id, UpdateProjectTypeDTO projectType) {
-            if ( id != projectType.Id) {
-                throw new ArgumentException("Id not matching project type Id");
-            }
+            ValidationHelper.CheckIfIdMatchBodyIdOrException(id, projectType.Id, nameof(ProjectType));
 
-            var projectTypeExists = await _context.ProjectTypes.AnyAsync( p => p.Name == projectType.Name);
-            if ( projectTypeExists ) {
-                throw new InvalidOperationException("Project type already in database");
-            }
+            bool projectTypeExists = await _context.ProjectTypes.AnyAsync( p => p.Name == projectType.Name);
+            ValidationHelper.CheckIfNotInDatabaseOrException(projectTypeExists, nameof(ProjectType));
 
             var updatedProjectType = new ProjectType { 
                 Id = projectType.Id, 
@@ -58,13 +51,9 @@ namespace DevHouse.Services {
         }
 
         public async Task DeleteProjectType(int id) {
-            if ( id < 1) {
-                throw new IndexOutOfRangeException("Id must be 1 or greater");
-            }
+            ValidationHelper.IdInRangeOrException(id);
             var projectType = await _context.ProjectTypes.FindAsync(id);
-            if ( projectType is null) {
-                throw new KeyNotFoundException("Project type not found");
-            }
+            ValidationHelper.CheckIfExistsOrException((projectType, nameof(ProjectType)));  
             _context.ProjectTypes.Remove(projectType);
             await _context.SaveChangesAsync();
         }

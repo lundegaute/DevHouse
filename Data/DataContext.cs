@@ -15,15 +15,23 @@ namespace DevHouse.Data {
             modelBuilder.Entity<Project>(entity => {
                 entity.HasKey(p => p.Id);
                 entity.Property(p => p.Name).IsRequired();
-                entity.HasOne(p => p.Team).WithMany(t => t.Projects);
-                entity.HasOne(p => p.ProjectType).WithMany(p => p.Projects);
+                entity.HasOne(p => p.Team)
+                      .WithMany(t => t.Projects)
+                      .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(p => p.ProjectType)
+                      .WithMany(p => p.Projects)
+                      .OnDelete(DeleteBehavior.Restrict);
             });
             modelBuilder.Entity<Developer>(entity => {
                 entity.HasKey(d => d.Id);
                 entity.Property(d => d.FirstName).IsRequired();
                 entity.Property(d => d.LastName).IsRequired();
-                entity.HasOne(d => d.Team).WithMany(d => d.Developers);
-                entity.HasOne(d => d.Role).WithMany(d => d.Developers);
+                entity.HasOne(d => d.Team)
+                      .WithMany(d => d.Developers)
+                      .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(d => d.Role)
+                      .WithMany(d => d.Developers)
+                      .OnDelete(DeleteBehavior.Restrict);
             });
             modelBuilder.Entity<Team>(entity => {
                 entity.HasKey(t => t.Id);
@@ -39,5 +47,4 @@ namespace DevHouse.Data {
             });
         }
     }
-    
 }
