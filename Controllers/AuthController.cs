@@ -6,14 +6,19 @@ using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace DevHouse.Controller {
     [ApiController]
     [Route("api/[controller]")]
     public class AuthController : ControllerBase {
         private readonly AuthService _authService;
-        public AuthController(AuthService authService) {
+        private readonly IMemoryCache _cache;
+
+        public AuthController(AuthService authService, IMemoryCache cache) {
             _authService = authService;
+            _cache = cache;
         }
 
         /// <summary>
@@ -24,9 +29,21 @@ namespace DevHouse.Controller {
         [HttpPost("register")]
         [SwaggerRequestExample(typeof(RegisterDTO), typeof(RegisterUserExample))]
         public async Task<IActionResult> Register([FromBody] RegisterDTO register) {
+            string cacheKey = $"RegisterAttempts_{HttpContext.Connection.RemoteIpAddress}";
+            int requestCount = _cache.GetOrCreate(cacheKey, entry => {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1);
+                return 0;
+            });
+
+            if (requestCount >= 10) {
+                return StatusCode(429, "Too many requests. Please try again later.");
+            }
+
+            _cache.Set(cacheKey, requestCount + 1);
+
             try {
                 if ( await _authService.RegisterUserAsync(register.Username, register.Password)) {
-                    return Ok("Resitration Successful");
+                    return Ok("Registration Successful");
                 }
                 return BadRequest("Registration failed");
             } catch (InvalidOperationException e) {
