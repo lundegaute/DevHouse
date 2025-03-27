@@ -17,8 +17,9 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Connecting to database
-var connectionString = builder.Configuration.GetConnectionString("DevHouseDbConnection")
-    ?? throw new InvalidOperationException("Connection string is missing");
+var connectionString = builder.Configuration.GetConnectionString("AZURE_MYSQL_CONNECTIONSTRING")
+    ?? builder.Configuration.GetConnectionString("DevHouseDbConnection") 
+        ?? throw new InvalidOperationException("Connection string is missing");
 builder.Services.AddDbContext<DataContext>(options => options.UseMySQL(connectionString));
 
 // Add services to the container.
