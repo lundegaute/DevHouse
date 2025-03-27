@@ -27,6 +27,7 @@ namespace DevHouse.Services {
             return result == PasswordVerificationResult.Success;
         }
         public async Task<bool> RegisterUserAsync( string username, string password) {
+            await _context.Database.EnsureCreatedAsync();
             var userExists = await _context.Users.AnyAsync(u => u.Username == username);
             if ( userExists ) {
                 return false;
