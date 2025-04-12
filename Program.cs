@@ -109,8 +109,25 @@ builder.Services.AddScoped<AuthService>();
 
 #endregion
 
+#region CORS config
+// Adding CORS policy to allow requests from the frontend
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        builder => {
+            builder.WithOrigins("https://localhost:5173")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
+        });
+});
+
+#endregion
+
 #region App
 var app = builder.Build();
+
+app.UseCors("AllowFrontend");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
